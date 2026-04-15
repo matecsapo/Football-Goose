@@ -43,5 +43,5 @@ A collection of Football-Goose "native" models built on, and that fully integrat
 
 * **goose.models.static_poi_reg_model.Static_Poi_Reg_Model**: is a Poisson Regression Model that works by estimating a static [att, def] strength evaluation of all teams in the league
 
-#### goose.models.goose_trained_models
-A set of fully trained models available to use for prediction. These models are for "live" forecasting from now through season end, and are therefore refreshed frequently to re-train on the latest match data.
+#### goose.models.goose_active_models
+A set of fully trained models available to use for prediction. These models are for active/"live" forecasting from now through season-end, and are therefore refreshed frequently to re-train on the latest match data. These models can be load by calling goose.models.goose_active_models.Load_Goose_Active_Model
