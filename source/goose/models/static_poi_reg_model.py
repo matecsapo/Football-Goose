@@ -1,5 +1,5 @@
-# Abstract model class
-from goose.engine.model import Model
+# for implementing a goose-native model
+from goose.models.goose_model import Goose_Model
 
 # For data manipulation
 from goose.engine.data import Results_Data, Game, Games, Game_Prediction
@@ -25,7 +25,7 @@ from scipy.stats import poisson, skellam
     # league-consistent estiamte of home advantage factor
 # Data can be added to model via Add_Data()
 # Training and testing data specified via Set_Train_Data() and Set_Test_Data()
-class Static_Poi_Reg_Model(Model):
+class Static_Poi_Reg_Model(Goose_Model):
     def __init__(self, model_name):
         self.Model_Name = model_name
         self.Data = None # Results_Data object

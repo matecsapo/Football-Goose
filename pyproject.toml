@@ -6,14 +6,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "football-goose"
-version = "0.1.0"
+version = "0.2.0-alpha"
 description = "Football/Soocer (G)eneralized f(O)recast m(O)dels & (S)imulation (E)ngine"
 readme = "README.md"
 authors = [{name = "Mate Csapo"}]
 dependencies = [
     "numpy",
     "pandas",
-    "scikit_learn",
+    "scikit-learn",
     "scipy",
     "soccerdata",
     "statsmodels",
@@ -26,3 +26,6 @@ Repository = "https://github.com/matecsapo/Football-Goose.git"
 [tool.setuptools.packages.find]
 where = ["source"]
 include = ["goose*"]
+
+[tool.setuptools.package-data]
+"goose.models.goose_trained_models" = ["*"]
