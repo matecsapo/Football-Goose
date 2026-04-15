@@ -1,6 +1,6 @@
 # Football-G.O.O.S.E. 🪿
 
-**Football/soccer (G)eneralized f(O)recast m(O)dels and (S)imulation (E)ngine.**
+**Football/Soccer (G)eneralized f(O)recast m(O)dels and (S)imulation (E)ngine.**
 
 Football-Goose is a modular python framework designed to faciliate building of models to predict/simulate football/soccer matches and competitions. Football-Goose consists of two core subpackages:
 * goose.models --> a set of models for forecasting football games/competitions
