@@ -25,6 +25,9 @@ defines goose.engine.model.Model, the absract base class defining required opera
 * M.Predict_Game --> Generate a set of predictive info for specified game
 * M.Simulate_Game --> Simulate an occurence of specified game
 
+#### goose.engine.data
+raw data for model training can be supplied both directly through Football-Goose and/or externally. Football-Goose provides wrapping classes around the [soccerdata](https://github.com/provoost/soccerdata) project that allows for easily pulling key datasets (standings, schedule, results, etc.) and translating them to a common set of team names (i.e. Brighton vs. Brighton and Hove Ablion vs. B and H Albion, etc.)
+
 #### goose.engine.forecast
 in goose, a forecast class encapsulates the logic of predicting/expecting/simulation a match, set of matches, or a competition's entire season, according to a given model. This module is designed for extensibility, allowing users to subclass base forecast objects to implement custom prediction heuristics or support unique tournament formats.
 
