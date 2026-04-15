@@ -12,7 +12,7 @@ Football-Goose consists of two parts:
 Football-Goose is packaged as a pyproject. it can be installed via pip by running
 
 ```bash
-pip install football-goose
+pip install git+https://github.com/matecsapo/football-goose.git
 ```
 in terminal. Check pyproject.toml for dependencies and other details.
 
