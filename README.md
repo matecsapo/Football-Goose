@@ -1,4 +1,4 @@
-# Football-G.O.O.S.E.
+# Football-G.O.O.S.E. 🪿
 
 **Football/soccer (G)eneralized f(O)recast m(O)dels and (S)imulation (E)ngine.**
 
