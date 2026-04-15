@@ -2,42 +2,46 @@
 
 **Football/soccer (G)eneralized f(O)recast m(O)dels and (S)imulation (E)ngine.**
 
-Football-Goose consists of two parts:
-* a set of models for forecasting soccer games/competitions
-* a generalized and customizable engine for producing simulations/expectations/predictions of football games and competitions, subject to built-in / user-defined custom model specified to use.
+Football-Goose is a modular python framework designed to faciliate building of models to predict/simulate football/soccer matches and competitions. Football-Goose consists of two core subpackages:
+* goose.models --> a set of models for forecasting football games/competitions
+* goose.engine --> a generalized, model-agnostic football simulation environment. The engine is built for extensibility and customizability, allowing users to generate match expectations and tournament outcomes using either built-in "Goose Native" goose.models or custom, user-defined implementations.
 
 ---
 
-### Installation:
+### Installation and Getting Started:
 Football-Goose is packaged as a pyproject. it can be installed via pip by running
 
 ```bash
 pip install git+https://github.com/matecsapo/football-goose.git
 ```
-in terminal. Check pyproject.toml for dependencies and other details.
+in terminal. Check pyproject.toml for dependencies and other details. I strongly recommend reading the rest of README.md, below, to familiarze oneself with the engine, as well the available native goose.models!
 
 ### goose.engine
-The goose.engine subpackage contains the goose simuilation engine. It provides a means of defining a custom / built-in model as a subclass of the abstract goose.engine.model.Model class. Any subclass of model can then invoke the engines various expectation/simulation/prediction functionalities
+subpackage goose.engine houses the football simulation logic and functionalities. goose.engine.model defines the "contract" for model integeration
+into the engine. By employing (via instantiating) and/or extending (via subclassing) the provided interfaces, goose.engine's built-in functionalities to run complex expectations, simulations, and predictive workflows.
 
 #### goose.engine.model
-defines goose.engine.model.Model, the absract class defining required operations/behaviours of models for interactability with goose.engine. Namely, all concrete models M must implement:
-* M.Predict_Game
-* M.Simulate_Game
-* M.Save_Model
-* M.Load_Model
+defines goose.engine.model.Model, the absract base class defining required operations/behaviours of models for interactability with goose.engine. Namely, all concrete models M must be suclasses of class Model that implement:
+* M.Predict_Game --> Generate a set of predictive info for specified game
+* M.Simulate_Game --> Simulate an occurence of specified game
 
 #### goose.engine.forecast
-in goose, a forecast defines a means/logic of predicting/expecting/simulation a game, set of games, or a competitions season until completion, subject to the model to use. goose.engine.forecast can be subclassed to implement custom prediction logics or support for custom competitions/formats.
+in goose, a forecast class encapsulates the logic of predicting/expecting/simulation a match, set of matches, or a competition's entire season, according to a given model. This module is designed for extensibility, allowing users to subclass base forecast objects to implement custom prediction heuristics or support unique tournament formats.
 
 #### goose.engine.league_forecast
-defines goose.engine.league_forecast.League_Forecast, which provides functionality, via subclasses League_Expect_Forecast and League_Simulate_Forecast, to, expect-out and simulate-out, respectively, a league-style competition
+Provides a forecast for league-style (i.e. round-robin like PL, not KO like CL) competitions. It provides two main forecasting approaches:
+* League_Expect_Forecast: Uses expected values to project standings.
+* League_Simulate_Forecast: Uses game-by-game simulation to "play" out remaining fixtures.
 
 #### goose.engine.monte_carlo
-Implements the running of a monte carlo simulation according to the forecast to use as simulator. Since all competitions differ, a concrete monte-carlo simulator for a given competition is implemented by creating a concrete subclass of goose.engine.monte_carlo.Monte_Carlo_Simulation, thereby defining the competition-specific "interpretation" of the simulations result. 
+Provides the infrastructure for high-iteration Monte Carlo experiments. Because every competition has a unique "success" definition (e.g., Top 4 vs. Relegation), a competition-specific concrete Monte_Carlo_Simulation subclass is used to define the competition-specific interpretation and aggregation of simulation results.
 
 ---
 
 ### goose.models
-Provides a set of goose.engine compatible models:
+A collection of Football-Goose "native" models built on, and that fully integrate with, the goose.engine interface:
 
 * **goose.models.static_poi_reg_model.Static_Poi_Reg_Model**: is a Poisson Regression Model that works by estimating a static [att, def] strength evaluation of all teams in the league
+
+#### goose.models.goose_trained_models
+A set of fully trained models available to use for prediction. These models are for "live" forecasting from now through season end, and are therefore refreshed frequently to re-train on the latest match data.
