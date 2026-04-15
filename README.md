@@ -9,7 +9,7 @@ Football-Goose consists of two parts:
 ---
 
 ### Installation:
-Football-Goose is packaged as a pyproject. it can be installed via pip by running the following in your terminal:
+Football-Goose is packaged as a pyproject. it can be installed via pip by running
 
 ```bash
 pip install football-goose
