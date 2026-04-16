@@ -112,9 +112,9 @@ class Static_Poi_Reg_Model(Goose_Model):
         # Json object of Model_Parameters dictionary
         # Model Evaluation statistics
         # Model Identification (model type + timestamp saved)
-    def Save_Model(self):
+    def Save_Model(self, directory):
         # Folder for storing model
-        folder = f"models/{self.Model_Name}"
+        folder = f"{directory}/{self.Model_Name}"
         os.makedirs(folder, exist_ok=True)
         # smf dump file
         self.Model.save(folder + "/smfmodel.pkl")
@@ -133,13 +133,11 @@ class Static_Poi_Reg_Model(Goose_Model):
 
     # Loads in a model from:
         # smf .pkl dump file + parameters.json
-    def Load_Model(self):
-        # folder where model_name is stored
-        folder = f"models/{self.Model_Name}"
+    def Load_Model(self, path):
         # read in model from file
-        self.Model = sm.load(folder + "/smfmodel.pkl")
+        self.Model = sm.load(path + "/smfmodel.pkl")
         # read in model parameters
-        with open(f"{folder}/parameters.json", "r") as f:
+        with open(f"{path}/parameters.json", "r") as f:
             self.Model_Parameters = json.load(f)
 
     # Produces a prediction report for a given supplied game

@@ -27,9 +27,12 @@ class Results_Data:
         self.data["home_team"] = standardize_names(self.data["home_team"])
         self.data["away_team"] = standardize_names(self.data["away_team"])
     
+    # save data
+    def save_data(self, path):
+        self.data.to_csv(path)
+
     # view data
     def view_data(self):
-        self.data.to_csv("results_data.csv")
         print(self.data.head(20))
 
 # Standings Data (via SofaScore)
@@ -59,9 +62,12 @@ class Standings_Data:
         self.data = self.data.reset_index()
         self.data = self.data[["Team", "MP", "Pts", "GD"]]
     
+    # Save data
+    def save_data(self, path):
+        self.data.to_csv(path)
+
     # view data
     def view_data(self):
-        self.data.to_csv("standings_data.csv")
         print(self.data.head(20))
 
 # Schedule Data (via ESPN)
@@ -101,9 +107,12 @@ class Schedule_Data:
             ))
         self.data = Games(games_list)
 
+    # Save data
+    def save_data(self, path):
+        self.raw_data.to_csv(path)
+    
     # view data
     def view_data(self):
-        self.raw_data.to_csv("schedule_data.csv")
         print(self.raw_data.head(20))
 
 # struct for storing contents of a PL game
@@ -113,8 +122,6 @@ class Game:
         self.home_team = home_team
         self.away_team = away_team
         self.date = date
-
-    # 
 
 # struct for storing a set/schedule of games
     # ordered by date (earliest to latest)
@@ -167,12 +174,11 @@ class Game_Prediction:
                             f"{game.home_team} Ratings" : home,
                             f"{game.away_team} Ratings" : away}
     
-    # Displays and saves the prediction:
-        # to terminal
-        # as a temp file
-    def view(self):
-        # print prediction to terminal
-        print(self.prediction)
-        # save to temp file
-        with open(f"{self.game.home_team}(h)_vs_{self.game.away_team}(a).json", "w") as f:
+    # save
+    def save(self, path):
+        with open(path, "w") as f:
             json.dump(self.prediction, f, indent=4)
+
+    # view
+    def view(self):
+        print(self.prediction)

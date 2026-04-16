@@ -27,20 +27,3 @@ class Forecast(ABC):
     @abstractmethod
     def Forecast(self):
         pass
-
-    # Display predicted results:
-        # To temp file
-        # To terminal
-    # (Abstract)
-    @abstractmethod
-    def View_Predicted_Results(self):
-        pass
-
-    # Display predicted standings:
-        # To temp file
-        # To terminal
-    # (Abstract)
-    @abstractmethod
-    def View_Predicted_Standings(self):
-        pass
-        

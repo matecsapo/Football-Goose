@@ -32,18 +32,20 @@ class League_Forecast(Forecast, ABC):
         # sort by (Pts, GD)
         self.predicted_standings = self.predicted_standings.sort_values(by = ["Pts", "GD"], ascending = False)
     
-    # Display predicted results:
-        # To temp file
-        # To terminal
+    # save predicted results
+    def Save_Predicted_Results(self, path):
+        self.predicted_results.to_csv(path)
+    
+    # view predicted results
     def View_Predicted_Results(self):
-        self.predicted_results.to_csv("predicted_results.csv")
         print(self.predicted_results)
 
-    # Display predicted standings:
-        # To temp file
-        # To terminal
+    # save predicted standings
+    def Save_Predicted_Standings(self, path):
+        self.predicted_standings.to_csv(path)
+
+    # view predicted standings
     def View_Predicted_Standings(self):
-        self.predicted_standings.to_csv("predicted_standings.csv")
         print(self.predicted_standings)
 
 # class for expecting out results of a set of games
@@ -215,8 +217,12 @@ class League_Monte_Carlo_Simulation(Monte_Carlo_Simulation, ABC):
         results = results.sort_values(by = "Avg Position")
         self.interpretation = results
     
+    # save interpretation
+    def save_interpretation(self, path):
+        self.interpretation.to_csv(path)
+
+    # view interpretation
     def view_interpretation(self):
-        self.interpretation.to_csv("PL_monte_carlo_.csv")
         print(self.interpretation.head(20))
 
 # class for running a PL monte-carlos simulation 
@@ -236,5 +242,85 @@ class PL_Monte_Carlo_Simulation(League_Monte_Carlo_Simulation):
             "CL" : (1, 5),
             "EL" : (6, 6),
             "UECL" : (7, 7),
+            "Relegation" : (18, 20)
+        }
+
+# class for running a Bundesliga monte-carlos simulation 
+# Determines the frequency probability via simulation of each team:
+    # winning league
+    # securing CL
+    # securing EL
+    # securing UECL
+    # being relegated
+class Bundesliga_Monte_Carlo_Simulation(League_Monte_Carlo_Simulation):
+    # Initialized with knowledge of the PL's placement significances
+        # i.e. places 1-5 get CL; 18-20 get relegated, etc.
+    def __init__(self, forecast : Forecast, num_simulations):
+        super().__init__(forecast, num_simulations)
+        self.placement_significances = {
+            "Title" : (1, 1),
+            "CL" : (1, 4),
+            "EL" : (5, 5),
+            "UECL" : (6, 6),
+            "Relegation" : (17, 18)
+        }
+
+# class for running a Laliga monte-carlos simulation 
+# Determines the frequency probability via simulation of each team:
+    # winning league
+    # securing CL
+    # securing EL
+    # securing UECL
+    # being relegated
+class Laliga_Monte_Carlo_Simulation(League_Monte_Carlo_Simulation):
+    # Initialized with knowledge of the PL's placement significances
+        # i.e. places 1-5 get CL; 18-20 get relegated, etc.
+    def __init__(self, forecast : Forecast, num_simulations):
+        super().__init__(forecast, num_simulations)
+        self.placement_significances = {
+            "Title" : (1, 1),
+            "CL" : (1, 4),
+            "EL" : (5, 5),
+            "UECL" : (6, 6),
+            "Relegation" : (18, 20)
+        }
+
+# class for running a Ligue 1 monte-carlos simulation 
+# Determines the frequency probability via simulation of each team:
+    # winning league
+    # securing CL
+    # securing EL
+    # securing UECL
+    # being relegated
+class Ligue1_Monte_Carlo_Simulation(League_Monte_Carlo_Simulation):
+    # Initialized with knowledge of the PL's placement significances
+        # i.e. places 1-5 get CL; 18-20 get relegated, etc.
+    def __init__(self, forecast : Forecast, num_simulations):
+        super().__init__(forecast, num_simulations)
+        self.placement_significances = {
+            "Title" : (1, 1),
+            "CL" : (1, 4),
+            "EL" : (5, 5),
+            "UECL" : (6, 6),
+            "Relegation" : (17, 18)
+        }
+
+# class for running a Serie A monte-carlos simulation 
+# Determines the frequency probability via simulation of each team:
+    # winning league
+    # securing CL
+    # securing EL
+    # securing UECL
+    # being relegated
+class SerieA_Monte_Carlo_Simulation(League_Monte_Carlo_Simulation):
+    # Initialized with knowledge of the PL's placement significances
+        # i.e. places 1-5 get CL; 18-20 get relegated, etc.
+    def __init__(self, forecast : Forecast, num_simulations):
+        super().__init__(forecast, num_simulations)
+        self.placement_significances = {
+            "Title" : (1, 1),
+            "CL" : (1, 4),
+            "EL" : (5, 5),
+            "UECL" : (6, 6),
             "Relegation" : (18, 20)
         }

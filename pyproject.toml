@@ -28,4 +28,4 @@ where = ["source"]
 include = ["goose*"]
 
 [tool.setuptools.package-data]
-"goose.models.goose_trained_models" = ["*"]
+"goose.models.goose_active_models" = ["*"]

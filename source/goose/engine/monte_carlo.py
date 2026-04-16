@@ -30,9 +30,3 @@ class Monte_Carlo_Simulation(ABC):
     @abstractmethod
     def interpret(self):
         pass
-
-    # view interpretation
-    # (Abstract)
-    @abstractmethod
-    def view_interpretation(self):
-        pass

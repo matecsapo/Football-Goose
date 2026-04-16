@@ -1,6 +1,5 @@
 # for creating a standardized template for goose's native models
 from goose.engine.model import Model
-from goose.models.goose_trained_models import get_path
 from abc import ABC, abstractmethod
 
 # for data handling
@@ -14,6 +13,8 @@ class Goose_Model(Model, ABC):
 
     # all goose-native models provide a means of saving
         # Saves a folder containing model at directory/self.Model_Name
+        # all goose-native models save a model_identification.json file with "Model Type"
+            # for knowing what model class it is a product of
     @abstractmethod
     def Save_Model(self, directory):
         pass
