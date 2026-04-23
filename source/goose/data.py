@@ -2,12 +2,13 @@
 import pandas as pd
 import json
 from datetime import datetime, timezone
+from pathlib import Path
 
 # soccerdata api used to pull all data
 import soccerdata as sd
 
 # for renaming teams to a common set of names
-from goose.engine.team_names import standardize_names
+from goose.name_standardization import standardize_team_name, standardize_team_names
 
 # Results Data (via UnderStats) of specific [leagus, seasons]'s results (incl. xg)
 class Results_Data:
@@ -24,8 +25,8 @@ class Results_Data:
         us = sd.Understat(leagues=leagues, seasons=seasons, proxy=None, no_cache=False, no_store=False)
         self.data = us.read_team_match_stats(force_cache = False)
         # standardize team names
-        self.data["home_team"] = standardize_names(self.data["home_team"])
-        self.data["away_team"] = standardize_names(self.data["away_team"])
+        self.data["home_team"] = standardize_team_names(self.data["home_team"])
+        self.data["away_team"] = standardize_team_names(self.data["away_team"])
     
     # save data
     def save_data(self, path):
@@ -54,7 +55,7 @@ class Standings_Data:
         # uppercase team
         self.data = self.data.rename(columns = {"team" : "Team"})
         # standardize team names
-        self.data["Team"] = standardize_names(self.data["Team"])
+        self.data["Team"] = standardize_team_names(self.data["Team"])
     
     # Simplifies standings to just [team, matches played, points, goal diff], ordered by (points, goal diff)
     def Simplify(self):
@@ -92,8 +93,8 @@ class Schedule_Data:
         # Convert date strings to datetime objects
         self.raw_data['date'] = pd.to_datetime(self.raw_data['date'])
         # standardize team names
-        self.raw_data["home_team"] = standardize_names(self.raw_data["home_team"])
-        self.raw_data["away_team"] = standardize_names(self.raw_data["away_team"])
+        self.raw_data["home_team"] = standardize_team_names(self.raw_data["home_team"])
+        self.raw_data["away_team"] = standardize_team_names(self.raw_data["away_team"])
         # if requested, filter to only games yet to be played
         if upcoming_only:
             self.raw_data = self.raw_data[self.raw_data["date"] > datetime.now((timezone.utc))]
@@ -155,30 +156,42 @@ class Games:
 class Game_Prediction:
     # Consists of Game, and various predictions
     # Stores data as a dictionary for ease of use
-    def __init__(self, game : Game, home_xg, away_xg, home, away, prob_home_win, prob_away_win, prob_draw):
+    def __init__(self, game : Game, home_xg, away_xg, prob_home_win, prob_away_win, prob_draw):
         self.game = game
         self.home_xg = home_xg
         self.away_xg = away_xg
-        self.home = home
-        self.away = away
         self.prob_home_win = prob_home_win
         self.prob_away_win = prob_away_win
         self.prob_draw = prob_draw
-        # store all data as a dictionary for simplicity
+        # store all data as a dataframe for simplicity
         self.prediction = {"game" : f"{game.home_team}(h) vs. {game.away_team}(a)",
                             f"{game.home_team} xg" : home_xg,
                             f"{game.away_team} xg" : away_xg,
                             f"{game.home_team} Win Probability" : prob_home_win,
                             f"{game.away_team} Win Probability" : prob_away_win,
-                            f"Draw Probability" : prob_draw,
-                            f"{game.home_team} Ratings" : home,
-                            f"{game.away_team} Ratings" : away}
+                            f"Draw Probability" : prob_draw}
+
+    # returns game_predict as a dictionary
+    def to_dict(self):
+        return {
+            "home_team": self.game.home_team,
+            "away_team": self.game.away_team,
+            "date": self.game.date,
+            "home_xg": self.home_xg,
+            "away_xg": self.away_xg,
+            "p_home": self.prob_home_win,
+            "p_away": self.prob_away_win,
+            "p_draw": self.prob_draw
+        }
+    
+    # returns game_prediction as a pd dataframe
+    def to_dataframe(self):
+        return pd.DataFrame([self.to_dict()])
     
     # save
     def save(self, path):
-        with open(path, "w") as f:
-            json.dump(self.prediction, f, indent=4)
+        self.to_dataframe().to_csv(Path(path) / Path(f"{self.game.home_team}(h)_vs._{self.game.away_team}(a)_prediction.csv"))
 
     # view
     def view(self):
-        print(self.prediction)
+        print(self.to_dataframe())

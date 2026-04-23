@@ -1,11 +1,10 @@
-__pycache__/
+**/__pycache__/
 *.pyc
 .DS_Store
 dist/
 build/
 *.egg-info/
-model_development/
-prediction_development/
 testing/
 source/football_goose.egg-info/
+source/goose/__pycache__
 .football_goose_env/
