@@ -7,4 +7,4 @@ build/
 testing/
 source/football_goose.egg-info/
 source/goose/__pycache__
-.football_goose_env/
+.goose_env/

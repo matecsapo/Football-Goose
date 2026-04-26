@@ -2,10 +2,9 @@ from abc import ABC, abstractmethod
 from typing import Self
 
 # for data storage
-from goose.data import Game, Game_Prediction
+from goose.data.goose_data_structures import Game, Game_Prediction
 from pathlib import Path
 import os
-import sys
 import json
 from datetime import datetime
 import subprocess

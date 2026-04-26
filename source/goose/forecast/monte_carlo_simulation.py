@@ -1,5 +1,5 @@
 # for data handling
-from goose.data import Games, Standings_Data
+from goose.data.goose_data_structures import Games, Standings
 from pathlib import Path
 from random import randint
 import os
@@ -17,12 +17,12 @@ from abc import ABC, abstractmethod
         # these specifications are defined via run_simulation() interpret()
 class Monte_Carlo_Simulation(Forecast, ABC):
     # Initialized as a forecast with parameter num_simulations
-    def __init__(self, forecast_name, model : Model, games : Games, num_simulations, existing_standings : Standings_Data = None):
+    def __init__(self, forecast_name, model : Model, games : Games, num_simulations, existing_standings : Standings = None):
         super().__init__(forecast_name, model, games, existing_standings)
         self.num_simulations = num_simulations
         # Monte carlo forecast consists of (list of all simulations , interpretation of simulation)
         # for storing all simulations
-        self.simulations = []
+        self.simulations : list[Standings] = []
         # for storing interpretation of monte carlo simulation
         self.interpretation = None
 
@@ -58,7 +58,7 @@ class Monte_Carlo_Simulation(Forecast, ABC):
     def View_Forecast(self):
         # random example simulation
         print("Random Example Simulation")
-        print(self.simulations[randint(0, self.num_simulations - 1)])
+        self.simulations[randint(0, self.num_simulations - 1)].view()
         # simulation interpretation
         print("")
         print("Simulation Interpretation")
@@ -71,6 +71,6 @@ class Monte_Carlo_Simulation(Forecast, ABC):
         folder = Path(directory) / self.forecast_name
         os.makedirs(folder, exist_ok=True)
         # random example simulation
-        self.simulations[randint(0, self.num_simulations - 1)].to_csv(folder / "example_simulation.csv")
+        self.simulations[randint(0, self.num_simulations - 1)].save(folder / "example_simulation.csv")
         # simulation interpretation
         self.interpretation.to_csv(folder / "monte-carlo-results.csv")

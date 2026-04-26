@@ -5,7 +5,7 @@ from typing import Annotated
 
 # imports necessary to run forecast
 from goose.operation.built_in_operations.utilities import load_model, league_MC_mappings
-from goose.data import Standings_Data, Schedule_Data
+from goose.data.pull_data import Standings_Data, Schedule_Data
 from goose.name_standardization import standardize_league_name
 from goose.forecast.league_expectation import League_Expectation
 from goose.forecast.monte_carlo_simulation import Monte_Carlo_Simulation
@@ -30,7 +30,7 @@ def expectation(league : str,
     league_standings = Standings_Data(league, "2025-2026")
     # run forecast
     typer.echo(f"Running expectation for {league} using {model_name}")
-    forecast = League_Expectation(league + "_expectation", model, league_schedule.data, league_standings)
+    forecast = League_Expectation(league + "_expectation", model, league_schedule.data, league_standings.data)
     forecast.Run_Forecast()
     # Display forecast to terminal
     forecast.View_Forecast()
@@ -56,7 +56,7 @@ def monte_carlo(league: str,
     # run forecast
     typer.echo(f"Running {num_sims} simulations for {league} using {model_name}...")
     forecast : Monte_Carlo_Simulation = None
-    forecast = league_MC_mappings[league](league + "_monte-carlo-simulation", model, league_schedule.data, num_sims, league_standings)
+    forecast = league_MC_mappings[league](league + "_monte-carlo-simulation", model, league_schedule.data, num_sims, league_standings.data)
     forecast.Run_Forecast()
     # Display forecast to terminal
     forecast.View_Forecast()

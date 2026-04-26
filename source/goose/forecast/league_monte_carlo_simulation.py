@@ -1,9 +1,10 @@
 # for data handling
 import pandas as pd
-from goose.data import Game
+from goose.data.goose_data_structures import Game, Games, League_Table
 
 # for implementing a monte carlo simulation forecast
 from goose.forecast.monte_carlo_simulation import Monte_Carlo_Simulation
+from goose.model import Model
 from abc import ABC, abstractmethod
 
 # abstract class for running a league (i.e. round-robin style, no KO) competition monte-carlo simulation
@@ -15,6 +16,12 @@ from abc import ABC, abstractmethod
 # league competition monte-carlo depends on the placement significances of the specific league
     # this is specified by unique concrete subclasses for each league
 class League_Monte_Carlo_Simulation(Monte_Carlo_Simulation, ABC):
+    # Initialized as a forecast with parameter num_simulations
+    def __init__(self, forecast_name, model : Model, games : Games, num_simulations, existing_standings : League_Table = None):
+        super().__init__(forecast_name, model, games, num_simulations, existing_standings)
+        # for league monte-carlo simulation, all simulations will produce League_Table
+        self.simulations : list[League_Table] = []
+
     # conrete competition-specific knowledge of placement significances must be supplied
         # i.e. in PL, places 1-5 get CL; 18-20 get relegated, etc.
     @property
@@ -49,9 +56,9 @@ class League_Monte_Carlo_Simulation(Monte_Carlo_Simulation, ABC):
             simulated_results[game.home_team]["GD"] += result["home_goals"] - result["away_goals"]
             simulated_results[game.away_team]["GD"] += result["away_goals"] - result["home_goals"]
         # Summarize simulated results in a dataframe
-        simulated_results = pd.DataFrame.from_dict(simulated_results, orient = "index").rename_axis("Team").reset_index(drop = False)
+        simulated_results = League_Table(pd.DataFrame.from_dict(simulated_results, orient = "index").rename_axis("Team").reset_index(drop = False))
         # sort by poilnts, goal_diff
-        simulated_results = simulated_results.sort_values(by = ["Pts", "GD"], ascending=False)
+        simulated_results.standings = simulated_results.standings.sort_values(by = ["Pts", "GD"], ascending=False)
         # if existing standings provided, combine existing and simulated results to get simulated final standings
         if self.existing_standings != None:
             simulated_results = self.Compute_Final_Standings(simulated_results)
@@ -74,36 +81,37 @@ class League_Monte_Carlo_Simulation(Monte_Carlo_Simulation, ABC):
                 "away_goals" : away_goals}
     
     # Computes final standings combining existing_standings and simulated results
-    def Compute_Final_Standings(self, simulated_results):
+    def Compute_Final_Standings(self, simulated_results : League_Table):
         # Simplify existing standings (only basic data needed)
-        self.existing_standings.Simplify()
+        self.existing_standings.simplify()
         # combine existing_standings and predicted_results (on team name)
         # merge on Team, applying suffixes _existing and _predicting
-        simulated_standings = pd.merge(self.existing_standings.data, simulated_results, on = "Team", suffixes=('_existing', '_predicted'))
+        simulated_standings = pd.merge(self.existing_standings.standings, simulated_results.standings, on = "Team", suffixes=('_existing', '_predicted'))
         # compute combined stats
         simulated_standings["MP"] = simulated_standings["MP_existing"] + simulated_standings["MP_predicted"]
         simulated_standings["Pts"] = simulated_standings["Pts_existing"] + simulated_standings["Pts_predicted"]
         simulated_standings["GD"] = simulated_standings["GD_existing"] + simulated_standings["GD_predicted"]
         # Keep only combined columns
-        simulated_standings = simulated_standings[["Team", "MP", "Pts", "GD"]]
+        simulated_standings = League_Table(simulated_standings)
+        simulated_standings.standings = simulated_standings.standings[["Team", "MP", "Pts", "GD"]]
         # Rename columns
-        simulated_standings.rename(columns = {"Pts" : "Simulated Pts", "GD" : "Simulated GD"})
+        simulated_standings.standings.rename(columns = {"Pts" : "Simulated Pts", "GD" : "Simulated GD"})
         # sort by (Pts, GD)
-        simulated_standings = simulated_standings.sort_values(by = ["Pts", "GD"], ascending = False)
+        simulated_standings.standings = simulated_standings.standings.sort_values(by = ["Pts", "GD"], ascending = False)
         # return simulated_standings
         return simulated_standings
 
     # Interprets monte carlo simulation in context of a league-based competition
     def interpret(self):
         # extract teams involved in simulations
-        teams = self.simulations[0]["Team"].unique()
+        teams = self.simulations[0].standings["Team"].unique()
         # tally occurences of each placement
         result_occurences = { # all categories to consider, as specific by the league's placement_significances
             team: {**{"Avg Position": 0}, **{label : 0 for label in self.placement_significances}} 
             for team in teams
         }
         for sim in self.simulations:
-            sim = sim.reset_index(drop = True)
+            sim = sim.standings.reset_index(drop = True)
             # consider eadh team
             for index, row in sim.iterrows():
                 team = row["Team"]

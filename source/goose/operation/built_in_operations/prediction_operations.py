@@ -3,7 +3,8 @@ import goose.registry as registry
 import typer
 
 # imports necessary to run forecast
-from goose.data import Game, Schedule_Data
+from goose.data.goose_data_structures import Game
+from goose.data.pull_data import Schedule_Data
 from goose.operation.built_in_operations.utilities import load_model
 from goose.name_standardization import standardize_team_name, standardize_league_name
 import pandas as pd

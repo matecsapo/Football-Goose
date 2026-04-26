@@ -1,6 +1,6 @@
 # for data manipulation
 import pandas as pd
-from goose.data import Game, Games, Standings_Data
+from goose.data.goose_data_structures import Game, Games, League_Table
 from pathlib import Path
 import os
 
@@ -13,13 +13,13 @@ from goose.model import Model
 # class for expecting out results of a set of games
 class League_Expectation(Forecast):
     # PL_Expext_Forecast requires no special parameters
-    def __init__(self, forecast_name, model : Model, games : Games, existing_standings : Standings_Data = None):
+    def __init__(self, forecast_name, model : Model, games : Games, existing_standings : League_Table = None):
         super().__init__(forecast_name, model, games, existing_standings)
         # league expecation forecast consist of (expected results, expected final standings)
         # for storing expected results
         self.expected_results = None
         # for storing expected final standings
-        self.expected_standings = None
+        self.expected_standings : League_Table = None
 
     # Performs full forecast:
         # expects out set of games
@@ -73,20 +73,21 @@ class League_Expectation(Forecast):
         # Computes final standings combining existing_standings and predicted results
     def Compute_Final_Standings(self):
         # Simplify existing standings (only basic data needed)
-        self.existing_standings.Simplify()
+        self.existing_standings.simplify()
         # combine existing_standings and predicted_results (on team name)
         # merge on Team, applying suffixes _existing and _predicting
-        self.expected_standings = pd.merge(self.existing_standings.data, self.expected_results, on = "Team", suffixes=('_existing', '_predicted'))
+        self.expected_standings = pd.merge(self.existing_standings.standings, self.expected_results, on = "Team", suffixes=('_existing', '_predicted'))
         # compute combined stats
         self.expected_standings["MP"] = self.expected_standings["MP_existing"] + self.expected_standings["MP_predicted"]
         self.expected_standings["Pts"] = self.expected_standings["Pts_existing"] + self.expected_standings["Pts_predicted"]
         self.expected_standings["GD"] = self.expected_standings["GD_existing"] + self.expected_standings["GD_predicted"]
         # Keep only combined columns
-        self.expected_standings = self.expected_standings[["Team", "MP", "Pts", "GD"]]
+        self.expected_standings = League_Table(self.expected_standings)
+        self.expected_standings.standings = self.expected_standings.standings[["Team", "MP", "Pts", "GD"]]
         # rename columns
-        self.expected_standings.rename(columns = {"Pts" : "xPts", "GD" : "xGD"})
+        self.expected_standings.standings.rename(columns = {"Pts" : "xPts", "GD" : "xGD"})
         # sort by (Pts, GD)
-        self.expected_standings = self.expected_standings.sort_values(by = ["Pts", "GD"], ascending = False)
+        self.expected_standings.standings = self.expected_standings.standings.sort_values(by = ["Pts", "GD"], ascending = False)
     
     # displays forecast to terminal:
         # displays expected results
@@ -98,7 +99,7 @@ class League_Expectation(Forecast):
         # expected standings
         print("")
         print("Expected Standings")
-        print(self.expected_standings)
+        self.expected_standings.view()
 
     # saves forecast to folder directory/self.forecast
         # saves expected results
@@ -109,4 +110,4 @@ class League_Expectation(Forecast):
         # expected results
         self.expected_results.to_csv(folder / "expected_results.csv")
         # expected standings
-        self.expected_standings.to_csv(folder / "expected_standings.csv")
+        self.expected_standings.save(folder / "expected_standings.csv")

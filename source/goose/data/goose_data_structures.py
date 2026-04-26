@@ -1,0 +1,163 @@
+# for defining data structures
+import pandas as pd
+import pandera.pandas as pa
+from datetime import datetime
+from pathlib import Path
+from abc import ABC
+
+# goose_data_structures.py defines some standardized data structures that must be abided to
+#   to allow for interaction with the Football-Goose engine
+
+# struct for storing a specific game
+class Game:
+    # Game consists of home_team, away_team, and game date
+    def __init__(self, home_team, away_team, date : datetime):
+        self.home_team = home_team
+        self.away_team = away_team
+        self.date = date
+
+# struct for storing a set/schedule of games
+# ordered by date (earliest to latest)
+class Games:
+    # Can be constructed as an empty list of games, one game, or list of games
+    def __init__(self, games : None | Game | list[Game]):
+        if games == None:
+            self.games = []
+        elif isinstance(games, list):
+            self.games = games
+        else:
+            self.games = [games]
+        # sort by date order immediately
+        self.Date_Order()
+    
+    # Adding one game to set
+    def Add_Game(self, game : Game):
+        self.games.append(game)
+        self.Date_Order()
+
+    # Adding list of games to set
+    def Add_Games(self, games : list[Game]):
+        self.games.extend(games)
+        self.Date_Order()
+
+    # Order games by date
+    def Date_Order(self):
+        self.games.sort(key = (lambda x : x.date))
+
+    # returns list of all games as a dataframe
+    def to_dataframe(self):
+        return pd.DataFrame(
+            {
+                "home_team": g.home_team,
+                "away_team": g.away_team,
+                "date": g.date
+            } 
+            for g in self.games
+        )
+
+    # save
+    def save_data(self, path):
+        self.to_dataframe().to_csv(path)
+
+    # view
+    def view_data(self):
+        print(self.to_dataframe().head(20))
+
+# struct for storing a given [league, season] competition-seasons standings
+# Abstracted - implemented for various concrete competition styles (i.e. round-robin, KO, etc.)
+# standings are stored in self.standings
+class Standings(ABC):
+    # Standings must specify [league, season]
+    def __init__(self, league = None, season = None):
+        self.league = league
+        self.season = season
+        # for storing [league, season]'s standings
+        self.standings = None
+    
+    # save
+    def save(self, path):
+        pass
+
+    # view
+    def view(self):
+        pass
+
+# struct for storing a given league/round-robin style (i.e. not KO) [league, season]'s table/standings
+# Pandera is used to enforce as specific "schema" for dataframe
+    # A League_Table must have:
+        # Team, MP, Pts, GD
+        # Can any any additional columns, as desired
+class League_Table(Standings):
+    # Pandera schema defining league tabble daf
+    League_Table_Schema = pa.DataFrameSchema(
+        columns = {
+            "Team": pa.Column(str),
+            "MP":   pa.Column(int, pa.Check.ge(0)), # MP must be >= 0
+            "Pts":  pa.Column(int, pa.Check.ge(0)), # Pts must be >= 0
+            "GD":   pa.Column(int),
+        },
+        # Additional columns are allowed
+        strict = False, 
+        # Types will automatically be recast, if natural
+        coerce = True  
+    )
+
+    # Validate the dataframe according to pandera league table schema
+    def __init__(self, league_table : pd.DataFrame, league = None, season = None):
+        super().__init__(league, season)
+        # Enforce league_table as being of required League_Table_Schema pd dataframe schema
+        self.standings : pd.DataFrame = league_table
+        self.standings = self.League_Table_Schema.validate(self.standings)
+
+    # Simplifies standings to just [team, matches played, points, goal diff], ordered by (points, goal diff)
+    def simplify(self):
+        # stop team from being index
+        self.standings = self.standings.reset_index()
+        self.standings = self.standings[["Team", "MP", "Pts", "GD"]]
+
+    # save data
+    def save(self, path):
+        self.standings.to_csv(path)
+    
+    # view data
+    def view(self):
+        print(self.standings.head(20))
+
+
+# struct for storing match prediction report
+# Consts of:
+    # Game,
+    # home/away xg, prob of home win / draw / away win
+class Game_Prediction:
+    def __init__(self, game : Game, home_xg, away_xg, prob_home_win, prob_away_win, prob_draw):
+        self.game = game
+        self.home_xg = home_xg
+        self.away_xg = away_xg
+        self.prob_home_win = prob_home_win
+        self.prob_away_win = prob_away_win
+        self.prob_draw = prob_draw
+
+    # returns game_predict as a dictionary
+    def to_dict(self):
+        return {
+            "home_team": self.game.home_team,
+            "away_team": self.game.away_team,
+            "date": self.game.date,
+            "home_xg": self.home_xg,
+            "away_xg": self.away_xg,
+            "p_home": self.prob_home_win,
+            "p_away": self.prob_away_win,
+            "p_draw": self.prob_draw
+        }
+    
+    # returns game_prediction as a pd dataframe
+    def to_dataframe(self):
+        return pd.DataFrame([self.to_dict()])
+    
+    # save
+    def save(self, path):
+        self.to_dataframe().to_csv(Path(path) / Path(f"{self.game.home_team}(h)_vs._{self.game.away_team}(a)_prediction.csv"))
+
+    # view
+    def view(self):
+        print(self.to_dataframe())

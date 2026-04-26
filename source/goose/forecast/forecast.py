@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 
 # for storing data
-from goose.data import Games, Standings_Data
+from goose.data.goose_data_structures import Games, Standings
 
 # for employing models
 from goose.model import Model
@@ -12,11 +12,11 @@ from goose.model import Model
 class Forecast(ABC):
     #  Initialized according to model and set of games to predict
         # Can also supply existing standings to combine predictions with
-    def __init__(self, forecast_name, model : Model, games : Games, existing_standings : Standings_Data = None):
+    def __init__(self, forecast_name, model : Model, games : Games, existing_standings : Standings = None):
         self.forecast_name = forecast_name
         self.model = model
         self.games = games
-        self.existing_standings = existing_standings
+        self.existing_standings : Standings = existing_standings
         # for storing produced forecast
         self.forecast = None
     
