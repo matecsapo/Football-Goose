@@ -1,6 +1,6 @@
 # for data manipulation
 import pandas as pd
-from goose.data.goose_data_structures import Game, Games, League_Table
+from goose.data.goose_data_structures import Game, Games, League_Table, Expected_Table
 from pathlib import Path
 import os
 
@@ -19,7 +19,7 @@ class League_Expectation(Forecast):
         # for storing expected results
         self.expected_results = None
         # for storing expected final standings
-        self.expected_standings : League_Table = None
+        self.expected_standings : Expected_Table = None
 
     # Performs full forecast:
         # expects out set of games
@@ -79,15 +79,14 @@ class League_Expectation(Forecast):
         self.expected_standings = pd.merge(self.existing_standings.standings, self.expected_results, on = "Team", suffixes=('_existing', '_predicted'))
         # compute combined stats
         self.expected_standings["MP"] = self.expected_standings["MP_existing"] + self.expected_standings["MP_predicted"]
-        self.expected_standings["Pts"] = self.expected_standings["Pts_existing"] + self.expected_standings["Pts_predicted"]
-        self.expected_standings["GD"] = self.expected_standings["GD_existing"] + self.expected_standings["GD_predicted"]
-        # Keep only combined columns
-        self.expected_standings = League_Table(self.expected_standings)
-        self.expected_standings.standings = self.expected_standings.standings[["Team", "MP", "Pts", "GD"]]
-        # rename columns
-        self.expected_standings.standings.rename(columns = {"Pts" : "xPts", "GD" : "xGD"})
+        self.expected_standings["xPts"] = self.expected_standings["Pts_existing"] + self.expected_standings["Pts_predicted"]
+        self.expected_standings["xGD"] = self.expected_standings["GD_existing"] + self.expected_standings["GD_predicted"]
+        # store into Expected_Table
+        self.expected_standings = Expected_Table(self.expected_standings)
+        # Keep only basic created columns
+        self.expected_standings.simplify()
         # sort by (Pts, GD)
-        self.expected_standings.standings = self.expected_standings.standings.sort_values(by = ["Pts", "GD"], ascending = False)
+        self.expected_standings.standings = self.expected_standings.standings.sort_values(by = ["xPts", "xGD"], ascending = False)
     
     # displays forecast to terminal:
         # displays expected results

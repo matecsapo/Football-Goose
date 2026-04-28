@@ -18,21 +18,18 @@ def operations_tree():
 # goose discover models
 @discover_operations.operation("models", description = "Displays list of accessible models")
 def models():
-    print(f"{50 * '-'}")
-    print(f"Accessible models ({len(registry.models)}):")
-    for model_name, fgm_path in registry.models.items():
-        print(f"🧠 {model_name:^30} | ➔  {fgm_path}")
-    print(f"{50 * '-'}")
+    registry.models_registry.display()
 
 # prints list of accessible model definitions
 # goose discover model-defs 
 @discover_operations.operation("model-defs", description = "Displays list of accessible model definitions")
 def model_defs():
-    print(f"{50 * '-'}")
-    print(f"Accesible model definitions ({len(registry.model_definitions)}):")
-    for name, (cls, description) in registry.model_definitions.items():
-        print(f"📍 {name:^30} | {f'[ {cls.__name__} ]':^30} ➔  {description}")
-    print(f"{50 * '-'}")
+    registry.model_definitions_registry.display()
+
+# prints display of accesible data types and sources
+@discover_operations.operation("data-types", description = "Displays all accessible data types and sources")
+def data_types():
+    registry.data_types_registry.display()
 
 # prints all structures successfully discovered by goose
 # goose discover all
@@ -41,6 +38,7 @@ def all():
     operations_tree()
     models()
     model_defs()
+    data_types()
 
 # default goose discover to goose discover all
 # goose discover

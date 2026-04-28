@@ -14,7 +14,7 @@ def load_model(model_name : str) -> tuple[Model, str]: # model and model_name
     discover_models()
     # retrieve model_path by model_name from registry
     import goose.registry as registry
-    model_path = registry.models[model_name]
+    model_path = registry.models_registry.retrieve_path(model_name)
     # load model via model_path .fgm file folder
     model = Model.load_model_fgm(model_path)
     # return (model, model_name)

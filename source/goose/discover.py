@@ -9,13 +9,13 @@ root = Path.cwd().resolve()
 
 # discover_models() identifies all .fgm model files recursively deeper than cwd
 def discover_models():
-    # identify .fgm model files
     import goose.registry as registry
+    # identify .fgm model files
     for fgm in root.rglob('*.fgm'):
         if fgm.is_dir():
             model_name = fgm.stem 
             # store relative path to root
-            registry.models[model_name] = fgm.relative_to(root)
+            registry.models_registry.register(model_name, fgm.relative_to(root))
 
 # discover_structures() identifies all operations and model definitions recursively deeper than cwd
 def discover_structures():
@@ -58,6 +58,8 @@ def discover_structures():
 def discover():
     # Discover goose's built-in operations
     import goose.operation.built_in_operations
+    # Discover goose's built-in data types and sources
+    import goose.data.built_in_data_types
     # discover operations + model definitions
     discover_structures()
     # discover .fgm model files

@@ -103,7 +103,7 @@ class Model(ABC):
             model_root_save_path = model_identification["Model Root Save Path"]
         # pull required class reference
         import goose.registry as registry
-        model_class, _ = registry.model_definitions[model_class_name]
+        model_class, _ = registry.model_definitions_registry.retrieve_definition(model_class_name)
         # load model via model-specific load_model()
         model = model_class.load_model(model_root_save_path)
         return model
@@ -113,6 +113,6 @@ class Model(ABC):
     def define_model(name : str = None, description : str = None):
         import goose.registry as registry
         def add_model_to_registry(cls):
-            registry.model_definitions[cls.__name__ if name == None else name] = (cls, description)
+            registry.model_definitions_registry.register(cls, name, description)
             return cls
         return add_model_to_registry

@@ -4,7 +4,7 @@ import typer
 
 # imports necessary to run forecast
 from goose.data.goose_data_structures import Game
-from goose.data.pull_data import Schedule_Data
+from goose.data.built_in_data_types.schedule_data import schedule_data
 from goose.operation.built_in_operations.utilities import load_model
 from goose.name_standardization import standardize_team_name, standardize_league_name
 import pandas as pd
@@ -50,10 +50,10 @@ def predict_remaining(league : str,
         model, model_name = load_model(model_name)
         # pull schedule of games to predict
         typer.echo(f"Predicting all remaining {league} games...")
-        remaining_games = Schedule_Data(league, "2025-2026", True)
+        remaining_games = schedule_data.Retrieve(league, "2025-2026", True)
         # Predict all remaining games
         game_predictions = []
-        for game in remaining_games.data.games:
+        for game in remaining_games.games:
               game_predictions.append(model.Predict_Game(game).to_dict())
         # convert to dataframe
         game_predictions = pd.DataFrame(game_predictions)
