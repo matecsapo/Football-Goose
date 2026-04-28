@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "football-goose"
-version = "1.1.1"
+version = "1.1.2"
 description = "Football/Soocer (G)eneralized f(O)recast m(O)dels & (S)imulation (E)ngine"
 readme = "README.md"
 authors = [{name = "Mate Csapo"}]

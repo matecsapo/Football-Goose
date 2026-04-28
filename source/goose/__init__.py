@@ -6,5 +6,7 @@ os.environ["SOCCERDATA_LOGLEVEL"] = "CRITICAL"
 
 from .model import Model
 from .data.goose_data_structures import Game, Games, Game_Prediction
-from .data.pull_data import Results_Data, Standings_Data, Schedule_Data
+from .data.built_in_data_types.results_data import results_data
+from .data.built_in_data_types.standings_data import standings_data
+from .data.built_in_data_types.schedule_data import schedule_data
 from .name_standardization import standardize_league_name, standardize_league_names, standardize_team_name, standardize_team_names
