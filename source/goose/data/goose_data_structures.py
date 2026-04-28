@@ -138,8 +138,8 @@ class Expected_Table(Table):
         columns = {
             "Team": pa.Column(str),
             "MP":   pa.Column(int, pa.Check.ge(0)), # MP must be >= 0
-            "xPts":  pa.Column(int, pa.Check.ge(0)), # Pts must be >= 0
-            "xGD":   pa.Column(int),
+            "xPts":  pa.Column(float, pa.Check.ge(0)), # Pts must be >= 0
+            "xGD":   pa.Column(float),
         },
         # Additional columns are allowed
         strict = False, 
