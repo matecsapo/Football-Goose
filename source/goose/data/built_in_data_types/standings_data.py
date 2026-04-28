@@ -52,6 +52,8 @@ def retrieve_standings_understats_reconstruction(league, season) -> League_Table
         standings = table[['Team', 'MP', 'Pts', 'GD']].sort_values(
             by=['Pts', 'GD'], ascending=False
         ).reset_index(drop=True)
+        # standardize team names
+        standings["Team"] = standardize_team_names(standings["Team"])
         # Store standings data into Goose-standardized structure
         standings = League_Table(standings)
         return standings
