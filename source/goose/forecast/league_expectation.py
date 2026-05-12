@@ -56,7 +56,6 @@ class League_Expectation(Forecast):
             expected_results[game.away_team]["GD"] += away_xg - home_xg
         # Summarize expected_results in a dataframe
         expected_results = pd.DataFrame.from_dict(expected_results, orient = "index").rename_axis("Team").reset_index(drop = False)
-        # sort by poilnts, goal_diff
         expected_results = expected_results.sort_values(by = ["Pts", "GD"], ascending=False)
         # return expected_results
         self.expected_results = expected_results

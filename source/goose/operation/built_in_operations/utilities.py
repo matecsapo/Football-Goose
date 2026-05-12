@@ -3,7 +3,7 @@
 # imports necessary for helpers
 from goose.model import Model
 from goose.forecast.league_monte_carlo_simulation import PL_Monte_Carlo_Simulation, Laliga_Monte_Carlo_Simulation, Bundesliga_Monte_Carlo_Simulation, Ligue1_Monte_Carlo_Simulation, SerieA_Monte_Carlo_Simulation
-from pathlib import Path
+from goose.data.goose_data_structures import League
 
 # for discovering models
 from goose.discover import discover_models
@@ -22,9 +22,9 @@ def load_model(model_name : str) -> tuple[Model, str]: # model and model_name
 
 # goose_operations wide definition of defeault models to use per league
 league_MC_mappings = {
-    "ENG-Premier League": PL_Monte_Carlo_Simulation,
-    "ESP-La Liga": Laliga_Monte_Carlo_Simulation,
-    "GER-Bundesliga": Bundesliga_Monte_Carlo_Simulation,
-    "FRA-Ligue 1": Ligue1_Monte_Carlo_Simulation,
-    "ITA-Serie A": SerieA_Monte_Carlo_Simulation
+    League("ENG-Premier League"): PL_Monte_Carlo_Simulation,
+    League("ESP-La Liga"): Laliga_Monte_Carlo_Simulation,
+    League("GER-Bundesliga"): Bundesliga_Monte_Carlo_Simulation,
+    League("FRA-Ligue 1"): Ligue1_Monte_Carlo_Simulation,
+    League("ITA-Serie A"): SerieA_Monte_Carlo_Simulation
 }

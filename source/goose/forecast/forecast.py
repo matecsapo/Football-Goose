@@ -15,7 +15,7 @@ class Forecast(ABC):
     def __init__(self, forecast_name, model : Model, games : Games, existing_standings : Standings = None):
         self.forecast_name = forecast_name
         self.model = model
-        self.games : Games= games
+        self.games : Games = games
         self.existing_standings : Standings = existing_standings
         # for storing produced forecast
         self.forecast = None

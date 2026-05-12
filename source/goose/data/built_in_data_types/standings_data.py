@@ -1,28 +1,28 @@
 # for implementing a data type
 from goose.data.data_types import Data_Type
-from typing import Callable, Any
+from typing import Callable
 
 # for retrieving standings data
 from goose.data.goose_data_structures import Standings, League_Table
 import soccerdata as sd
-from goose.name_standardization import standardize_team_names
+from goose.data.goose_data_structures import Team, League
 import pandas as pd
 
 # Data type standings_data, defined as data of/on standings for a given [league, season]
-standings_data = Data_Type.Create_Type("Standings Data", Callable[[str, str], Standings], "Standings data for a given [league, season]")
+standings_data = Data_Type.Create_Type("Standings Data", Callable[[League, str], Standings], "Standings data for a given [league, season]")
 
 # Data retrieval function for retrieving standings data via sofascore via soccerdata
 @standings_data.Define_Data_Retrieval_Function("Sofascore", "Retrieves standings data via sofascore via soccerdata")
-def retrieve_standings_sofascore(leagues, seasons):
+def retrieve_standings_sofascore(league : League, season : str):
         # retrieve standings data
-        sfs = sd.Sofascore(leagues=leagues, seasons=seasons, proxy=None, no_cache=False, no_store=False)
+        sfs = sd.Sofascore(leagues=league.league, seasons=season, proxy=None, no_cache=False, no_store=False)
         standings = sfs.read_league_table(force_cache = False)
         # just in case, sort by (points, goal diff)
         standings = standings.sort_values(by = ["Pts", "GD"], ascending = False)
         # uppercase team
         standings = standings.rename(columns = {"team" : "Team"})
         # standardize team names
-        standings["Team"] = standardize_team_names(standings["Team"])
+        standings["Team"] = standings["Team"].apply(Team)
         # Store standings data into Goose-standardized structure 
         standings = League_Table(standings)
         return standings
@@ -30,9 +30,9 @@ def retrieve_standings_sofascore(leagues, seasons):
 # Data retrieval function for retrieving standings data via understats (reconstructio) via soccerdata
 # this approach determines current standings by "summing" all games completed so far this season
 @standings_data.Define_Data_Retrieval_Function("Understats(Reconstruction)", "Retrieves standings data via understats (reconstruction) via soccerdata")
-def retrieve_standings_understats_reconstruction(league, season) -> League_Table:
+def retrieve_standings_understats_reconstruction(league : League, season : str) -> League_Table:
         # retrieve results data
-        us = sd.Understat(league, season, proxy=None, no_cache=False, no_store=False)
+        us = sd.Understat(league.league, season, proxy=None, no_cache=False, no_store=False)
         data = us.read_team_match_stats()
         # rename columns
         home = data[['home_team', 'home_points', 'home_goals', 'away_goals']].rename(
@@ -53,7 +53,7 @@ def retrieve_standings_understats_reconstruction(league, season) -> League_Table
             by=['Pts', 'GD'], ascending=False
         ).reset_index(drop=True)
         # standardize team names
-        standings["Team"] = standardize_team_names(standings["Team"])
+        standings["Team"] = standings["Team"].apply(Team)
         # Store standings data into Goose-standardized structure
         standings = League_Table(standings)
         return standings

@@ -1,6 +1,3 @@
-# for data manipulation
-import pandas as pd
-
 # standardized version of each team's name, accounting for all variety of names used by different sources
     # [chosen name] --> [alias names, ...]
 Raw_Team_Name_Mappings = {
@@ -50,6 +47,9 @@ Raw_Team_Name_Mappings = {
     "Valencia": ["Valencia CF", "Valencia"],
     "Valladolid": ["Real Valladolid", "Valladolid"],
     "Villarreal": ["Villarreal CF", "Villarreal"],
+    "Elche": ["Elche CF", "Elche", "Elche Club de Fútbol"],
+    "Levante": ["Levante UD", "Levante", "Levante Unión Deportiva", "LUD"],
+    "Real Oviedo": ["Oviedo", "Real Oviedo", "Real Oviedo SAD", "Real Uviéu"],
 
     # --- BUNDESLIGA ---
     "Augsburg": ["FC Augsburg", "FCA", "Augsburg FC", "Augsbourg"],
@@ -93,6 +93,10 @@ Raw_Team_Name_Mappings = {
     "Udinese": ["Udinese Calcio", "Udinese"],
     "Venezia": ["Venezia FC", "Venezia"],
     "Verona": ["Hellas Verona", "Verona"],
+    "Sassuolo": ["US Sassuolo", "Sassuolo Calcio", "U.S. Sassuolo"],
+    "Cremonese": ["US Cremonese", "Cremonese Calcio", "U.S. Cremonese 1903"],
+    "Lecce": ["US Lecce", "U.S. Lecce", "Lecce Calcio"],
+    "Pisa": ["Pisa SC", "Pisa 1909", "A.C. Pisa", "Pisa Sporting Club"],
 
     # --- LIGUE 1 ---
     "Angers": ["Angers SCO", "Angers-SCO", "SCO Angers", "Angers"],
@@ -112,7 +116,10 @@ Raw_Team_Name_Mappings = {
     "Rennes": ["Stade Rennais", "Rennes", "Stade Rennais FC", "SRFC"],
     "Saint-Étienne": ["Saint-Etienne", "ASSE", "St Etienne", "St-Etienne", "Saint Etienne", "AS Saint-Etienne"],
     "Strasbourg": ["RC Strasbourg", "Strasbourg", "RC Strasbourg Alsace", "RCSA", "Strasbourg RC"],
-    "Toulouse": ["Toulouse FC", "Toulouse", "TFC", "Toulouse Football Club"]
+    "Toulouse": ["Toulouse FC", "Toulouse", "TFC", "Toulouse Football Club"],
+    "Lorient": ["FC Lorient", "Lorient FC", "Lorient-Bretagne Sud", "FCL"],
+    "Metz": ["FC Metz", "Metz FC", "Football Club de Metz"],
+    "Paris FC": ["PFC", "Paris FC", "Paris Football Club"]
 }
 
 # standardized version of each league's name, accounting for all variety of names used by different sources
@@ -163,19 +170,3 @@ for raw_source, target in [(Raw_Team_Name_Mappings, Team_Name_Mappings), (Raw_Le
         # map aliases to chosen
         for alias in aliases:
             target[alias] = chosen
-
-# Return the standardized name according to provided alias
-def standardize_team_name(alias : str):
-    return Team_Name_Mappings[alias]
-
-# Standardizes team names from various aliases used by sources to chosen set of names
-def standardize_team_names(team_names : pd.Series):
-    return team_names.map(Team_Name_Mappings).fillna(team_names)
-
-# Return the standardized league name according to provided alias
-def standardize_league_name(alias : str):
-    return League_Name_Mappings[alias]
-
-# standardize league names from various aliases used by sources to chosen set of names
-def standardize_league_names(league_names : pd.Series):
-    return league_names.map(League_Name_Mappings).fillna(league_names)

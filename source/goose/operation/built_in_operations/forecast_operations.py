@@ -7,7 +7,7 @@ from typing import Annotated
 from goose.operation.built_in_operations.utilities import load_model, league_MC_mappings
 from goose.data.built_in_data_types.schedule_data import schedule_data
 from goose.data.built_in_data_types.standings_data import standings_data
-from goose.name_standardization import standardize_league_name
+from goose.data.goose_data_structures import League
 from goose.forecast.league_expectation import League_Expectation
 from goose.forecast.monte_carlo_simulation import Monte_Carlo_Simulation
 
@@ -22,16 +22,17 @@ def expectation(league : str,
                 model_name : str, 
                 save: str = typer.Option(None, "--save", flag_value= ".", help ="Save to specified path")):
     """Expectation forecast a league"""
-    league = standardize_league_name(league)
+    if isinstance(league, str):
+        league = League(league)
     # load desired model
     model, model_name = load_model(model_name)
     # Retrieve league-specific data   
-    typer.echo(f"Retrieving latest {league} data...")
+    typer.echo(f"Retrieving latest {league.league} data...")
     league_schedule = schedule_data.Retrieve(league, "2025-2026", True)
     league_standings = standings_data.Retrieve(league, "2025-2026")
     # run forecast
-    typer.echo(f"Running expectation for {league} using {model_name}")
-    forecast = League_Expectation(league + "_expectation", model, league_schedule, league_standings)
+    typer.echo(f"Running expectation for {league.league} using {model_name}")
+    forecast = League_Expectation(league.league + "_expectation", model, league_schedule, league_standings)
     forecast.Run_Forecast()
     # Display forecast to terminal
     forecast.View_Forecast()
@@ -47,17 +48,18 @@ def monte_carlo(league: str,
                 num_sims : Annotated[int, typer.Option("--sims", "-n", help="Number of simulations to run")] = 10000,
                 save: str = typer.Option(None, "--save", flag_value= ".", help ="Save to specified path")):
     """Monte-Carlo forecast a league"""
-    league = standardize_league_name(league)
+    if isinstance(league, str):
+        league = League(league)
     # load desired model
     model, model_name = load_model(model_name)
     # Retrieve league-specific data    
-    typer.echo(f"Retrieving latest {league} data...")
+    typer.echo(f"Retrieving latest {league.league} data...")
     league_schedule = schedule_data.Retrieve(league, "2025-2026", True)
     league_standings = standings_data.Retrieve(league, "2025-2026")
     # run forecast
-    typer.echo(f"Running {num_sims} simulations for {league} using {model_name}...")
+    typer.echo(f"Running {num_sims} simulations for {league.league} using {model_name}...")
     forecast : Monte_Carlo_Simulation = None
-    forecast = league_MC_mappings[league](league + "_monte-carlo-simulation", model, league_schedule, num_sims, league_standings)
+    forecast = league_MC_mappings[league](league.league + "_monte-carlo-simulation", model, league_schedule, num_sims, league_standings)
     forecast.Run_Forecast()
     # Display forecast to terminal
     forecast.View_Forecast()

@@ -6,7 +6,7 @@ import typer
 from goose.data.goose_data_structures import Game
 from goose.data.built_in_data_types.schedule_data import schedule_data
 from goose.operation.built_in_operations.utilities import load_model
-from goose.name_standardization import standardize_team_name, standardize_league_name
+from goose.data.goose_data_structures import Team, League
 import pandas as pd
 from pathlib import Path
 
@@ -23,14 +23,17 @@ def predict_game(league : str,
                  model_name : str, 
                  save: str = typer.Option(None, "--save", flag_value= ".", help ="Save to specified path")):
         """Predict a single game"""
-        league = standardize_league_name(league)
+        if isinstance(league, str):
+            league = League(league)
         # Standardize team names
-        home = standardize_team_name(home)
-        away = standardize_team_name(away)
+        if isinstance(home, str):
+            home = Team(home)
+        if isinstance(away, str):
+            away = Team(away)
         # load desired model
         model, model_name = load_model(model_name)
         # Predict game
-        typer.echo(f"{model_name}Predicting {home}(h) vs. {away}(a)")
+        typer.echo(f"{model_name}Predicting {home.team}(h) vs. {away.team}(a)")
         game_prediction = model.Predict_Game(Game(home, away, None))
         # Display game prediction to terminal
         game_prediction.view()
@@ -45,11 +48,12 @@ def predict_remaining(league : str,
                  model_name : str, 
                  save: str = typer.Option(None, "--save", flag_value= ".", help ="Save to specified path")):
         """Predict a single game"""
-        league = standardize_league_name(league)
+        if isinstance(league, str):
+            league = League(league)
         # load desired model
         model, model_name = load_model(model_name)
         # pull schedule of games to predict
-        typer.echo(f"Predicting all remaining {league} games...")
+        typer.echo(f"Predicting all remaining {league.league} games...")
         remaining_games = schedule_data.Retrieve(league, "2025-2026", True)
         # Predict all remaining games
         game_predictions = []

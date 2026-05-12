@@ -5,16 +5,95 @@ from datetime import datetime
 from pathlib import Path
 from abc import ABC
 
+# for standardizing team names
+from goose.data.name_standardization import Team_Name_Mappings, League_Name_Mappings
+
 # goose_data_structures.py defines some standardized data structures that must be abided to
 #   to allow for interaction with the Football-Goose engine
+
+# struct for storing a specific team
+class Team:
+    # upon initialized, adjusts team name to standardized Goose equivalent
+    def __init__(self, team_name : str):
+        self.team = self.standardize_team_name(team_name)
+
+    # Return the standardized name according to provided alias
+    @staticmethod
+    def standardize_team_name(alias : str):
+        return Team_Name_Mappings[alias]
+
+    # Standardizes team names from various aliases used by sources to chosen set of names
+    @staticmethod
+    def standardize_team_names(team_names : pd.Series):
+        return team_names.map(Team_Name_Mappings).fillna(team_names)
+    
+    # equivalence of teams
+    def __eq__(self, other):
+        if not isinstance(other, Team):
+            return False
+        return self.team == other.team
+    
+    # string alphabetical ordering of teams
+    def __lt__(self, other):
+        if not isinstance(other, Team):
+            return NotImplemented
+        return self.team < other.team
+    
+    # hashing
+    def __hash__(self):
+        return hash(self.team)
+    
+    # for df printing
+    def __repr__(self):
+        return self.team
+
+    # For print() and CSV exports
+    def __str__(self):
+        return self.team
+    
+# struct for storing a specific league
+class League:
+    # upon initialization, adjusts league name to standardized Goose equivalent
+    def __init__(self, league_name : str):
+        self.league = self.standardize_league_name(league_name)
+
+    # Return the standardized league name according to provided alias
+    @staticmethod
+    def standardize_league_name(alias : str):
+        return League_Name_Mappings[alias]
+
+    # standardize league names from various aliases used by sources to chosen set of names
+    @staticmethod
+    def standardize_league_names(league_names : pd.Series):
+        return league_names.map(League_Name_Mappings).fillna(league_names)
+
+    # equivalence of league
+    def __eq__(self, other):
+        if not isinstance(other, League):
+            return False
+        return self.league == other.league
+    
+    # hashing
+    def __hash__(self):
+        return hash(self.league)
+    
+    # for df printing
+    def __repr__(self):
+        return self.league
+
+    # For print() and CSV exports
+    def __str__(self):
+        return self.league
 
 # struct for storing a specific game
 class Game:
     # Game consists of home_team, away_team, and game date
-    def __init__(self, home_team, away_team, date : datetime):
+    # flag indicating whether game is at a neutral venue
+    def __init__(self, home_team : Team, away_team : Team, date : datetime, neutral_venue = False):
         self.home_team = home_team
         self.away_team = away_team
         self.date = date
+        self.neutral_venue = neutral_venue
 
 # struct for storing a set/schedule of games
 # ordered by date (earliest to latest)
@@ -68,7 +147,7 @@ class Games:
 # standings are stored in self.standings
 class Standings(ABC):
     # Standings must specify [league, season]
-    def __init__(self, league = None, season = None):
+    def __init__(self, league : League = None, season = None):
         self.league = league
         self.season = season
         # for storing [league, season]'s standings
@@ -91,7 +170,7 @@ class Table(Standings, ABC):
     Table_Schema : pa.DataFrameSchema = None
 
     # Constructed by immediately validating supplied dataframe according to pandera league table schema
-    def __init__(self, league_table : pd.DataFrame, league = None, season = None):
+    def __init__(self, league_table : pd.DataFrame, league : League = None, season = None):
         super().__init__(league, season)
         # Enforce league_table as being of required League_Table_Schema pd dataframe schema
         self.standings : pd.DataFrame = league_table
@@ -117,7 +196,7 @@ class League_Table(Table):
     # Pandera schema defining league tabble daf
     Table_Schema = pa.DataFrameSchema(
         columns = {
-            "Team": pa.Column(str),
+            "Team": pa.Column(object),
             "MP":   pa.Column(int, pa.Check.ge(0)), # MP must be >= 0
             "Pts":  pa.Column(int, pa.Check.ge(0)), # Pts must be >= 0
             "GD":   pa.Column(int),
@@ -136,7 +215,7 @@ class Expected_Table(Table):
     # Pandera schema defining league tabble daf
     Table_Schema = pa.DataFrameSchema(
         columns = {
-            "Team": pa.Column(str),
+            "Team": pa.Column(object),
             "MP":   pa.Column(int, pa.Check.ge(0)), # MP must be >= 0
             "xPts":  pa.Column(float, pa.Check.ge(0)), # Pts must be >= 0
             "xGD":   pa.Column(float),
@@ -155,7 +234,7 @@ class Simulated_Table(Table):
     # Pandera schema defining league tabble daf
     Table_Schema = pa.DataFrameSchema(
         columns = {
-            "Team": pa.Column(str),
+            "Team": pa.Column(object),
             "MP":   pa.Column(int, pa.Check.ge(0)), # MP must be >= 0
             "Simulated Pts":  pa.Column(int, pa.Check.ge(0)), # Pts must be >= 0
             "Simulated GD":   pa.Column(int),
@@ -182,8 +261,8 @@ class Game_Prediction:
     # returns game_predict as a dictionary
     def to_dict(self):
         return {
-            "home_team": self.game.home_team,
-            "away_team": self.game.away_team,
+            "home_team": self.game.home_team.team,
+            "away_team": self.game.away_team.team,
             "date": self.game.date,
             "home_xg": self.home_xg,
             "away_xg": self.away_xg,
