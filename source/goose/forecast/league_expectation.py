@@ -1,20 +1,23 @@
 # for data manipulation
 import pandas as pd
-from goose.data.goose_data_structures import Game, Games, League_Table, Expected_Table
+from goose.data.goose_data_structures.game_storage import Games
+from goose.data.goose_data_structures.standings_storage import League_Table, Expected_Table
 from pathlib import Path
 import os
 
 # for implementing a forecast
-from goose.forecast.forecast import Forecast
+from goose.forecast.expectation import Expectation
 
 # for employing a model
 from goose.model import Model
 
 # class for expecting out results of a set of games
-class League_Expectation(Forecast):
+class League_Expectation(Expectation):
     # PL_Expext_Forecast requires no special parameters
-    def __init__(self, forecast_name, model : Model, games : Games, existing_standings : League_Table = None):
-        super().__init__(forecast_name, model, games, existing_standings)
+    def __init__(self, forecast_name : str, model : Model, games : Games, existing_standings : League_Table = None):
+        super().__init__(forecast_name, model)
+        self.games = games
+        self.existing_standings = existing_standings
         # league expecation forecast consist of (expected results, expected final standings)
         # for storing expected results
         self.expected_results = None
@@ -44,7 +47,7 @@ class League_Expectation(Forecast):
         expected_results = {team: {"MP" : 0,"Pts" : 0, "GD" : 0} for team in teams}
         for game in self.games.games:
             # Get expectation of game
-            home_xg, away_xg, home_xp, away_xp = self.Expect_Game(game)
+            home_xg, away_xg, home_xp, away_xp = self.Expect_Game(game, self.model)
             # Update MP of each team
             expected_results[game.home_team]["MP"] += 1
             expected_results[game.away_team]["MP"] += 1
@@ -59,15 +62,6 @@ class League_Expectation(Forecast):
         expected_results = expected_results.sort_values(by = ["Pts", "GD"], ascending=False)
         # return expected_results
         self.expected_results = expected_results
-
-    # Returns expected value of goals scored + points achieved by each team in specified game
-    def Expect_Game(self, game : Game):
-        prediction = self.model.Predict_Game(game)
-        # determine xp of both teams
-        home_xp = 0 * prediction.prob_away_win + 1 * prediction.prob_draw + 3 * prediction.prob_home_win
-        away_xp = 0 * prediction.prob_home_win + 1 * prediction.prob_draw + 3 * prediction.prob_away_win
-        # return xg and xp of both teams
-        return prediction.home_xg, prediction.away_xg, home_xp, away_xp
 
         # Computes final standings combining existing_standings and predicted results
     def Compute_Final_Standings(self):

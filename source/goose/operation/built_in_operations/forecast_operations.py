@@ -7,7 +7,7 @@ from typing import Annotated
 from goose.operation.built_in_operations.utilities import load_model, league_MC_mappings
 from goose.data.built_in_data_types.schedule_data import schedule_data
 from goose.data.built_in_data_types.standings_data import standings_data
-from goose.data.goose_data_structures import League
+from goose.data.goose_data_structures.identifiers import League, Season
 from goose.forecast.league_expectation import League_Expectation
 from goose.forecast.monte_carlo_simulation import Monte_Carlo_Simulation
 
@@ -28,8 +28,8 @@ def expectation(league : str,
     model, model_name = load_model(model_name)
     # Retrieve league-specific data   
     typer.echo(f"Retrieving latest {league.league} data...")
-    league_schedule = schedule_data.Retrieve(league, "2025-2026", True)
-    league_standings = standings_data.Retrieve(league, "2025-2026")
+    league_schedule = schedule_data.Retrieve(league, Season(2026), True)
+    league_standings = standings_data.Retrieve(league, Season(2026))
     # run forecast
     typer.echo(f"Running expectation for {league.league} using {model_name}")
     forecast = League_Expectation(league.league + "_expectation", model, league_schedule, league_standings)
@@ -54,8 +54,8 @@ def monte_carlo(league: str,
     model, model_name = load_model(model_name)
     # Retrieve league-specific data    
     typer.echo(f"Retrieving latest {league.league} data...")
-    league_schedule = schedule_data.Retrieve(league, "2025-2026", True)
-    league_standings = standings_data.Retrieve(league, "2025-2026")
+    league_schedule = schedule_data.Retrieve(league, Season(2026), True)
+    league_standings = standings_data.Retrieve(league, Season(2026))
     # run forecast
     typer.echo(f"Running {num_sims} simulations for {league.league} using {model_name}...")
     forecast : Monte_Carlo_Simulation = None

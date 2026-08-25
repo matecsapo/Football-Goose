@@ -5,20 +5,20 @@ import pandas as pd
 
 # for retrieving schedule data
 import soccerdata as sd
-from goose.data.goose_data_structures import Team, League
+from goose.data.goose_data_structures.identifiers import Team, League, Season
 
 # for storing pulled schedule
-from goose.data.goose_data_structures import Game, Games
+from goose.data.goose_data_structures.game_storage import Game, Games
 from datetime import datetime, timezone
 
 # Data type schedule_data, defined as data of schedule of games/league/competition
-schedule_data = Data_Type.Create_Type("Schedule Data", Callable[[League, str, bool], Games], "Data on scheduling of games")
+schedule_data = Data_Type.Create_Type("Schedule Data", Callable[[League, Season, bool], Games], "Data on scheduling of games")
 
 # Data retrieval function for retrieving schedule data via ESPN via soccerdata
 @schedule_data.Define_Data_Retrieval_Function("ESPN", "Retrieves schedule data via ESPN via soccerdata")
-def retrieve_schedule_espn(league : League, season : str, upcoming_only):
+def retrieve_schedule_espn(league : League, season : Season, upcoming_only):
         # retrieve schedule data
-        espn = sd.ESPN(leagues=league.league, seasons=season, proxy=None, no_cache=False, no_store=False)
+        espn = sd.ESPN(leagues=league.to_soccerdata_name(), seasons=season.to_soccerdata_tag(), proxy=None, no_cache=False, no_store=False)
         schedule = espn.read_schedule(force_cache = False)
         # Convert date strings to datetime objects
         schedule['date'] = pd.to_datetime(schedule['date'])
@@ -41,9 +41,9 @@ def retrieve_schedule_espn(league : League, season : str, upcoming_only):
 
 # Data retrieval function for retrieving schedule data via UnderStat via soccerdata
 @schedule_data.Define_Data_Retrieval_Function("UnderStats", "Retrieves schedule data via UnderStats via soccerdata")
-def retrieve_schedule_understat(league : League, season : str, upcoming_only):
+def retrieve_schedule_understat(league : League, season : Season, upcoming_only):
         # retrieve schedule data
-        us = sd.Understat(leagues=league.league, seasons=season, proxy=None, no_cache=False, no_store=False)
+        us = sd.Understat(leagues=league.to_soccerdata_name(), seasons=season.to_soccerdata_tag(), proxy=None, no_cache=False, no_store=False)
         schedule = us.read_schedule(include_matches_without_data = True, force_cache = False)
         # Convert date strings to datetime objects
         schedule['date'] = pd.to_datetime(schedule['date'], utc = True)

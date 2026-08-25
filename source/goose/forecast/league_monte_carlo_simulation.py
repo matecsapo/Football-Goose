@@ -1,6 +1,7 @@
 # for data handling
 import pandas as pd
-from goose.data.goose_data_structures import Game, Games, League_Table, Simulated_Table
+from goose.data.goose_data_structures.game_storage import Game, Games
+from goose.data.goose_data_structures.standings_storage import League_Table, Simulated_Table
 
 # for implementing a monte carlo simulation forecast
 from goose.forecast.monte_carlo_simulation import Monte_Carlo_Simulation
@@ -17,8 +18,10 @@ from abc import ABC, abstractmethod
     # this is specified by unique concrete subclasses for each league
 class League_Monte_Carlo_Simulation(Monte_Carlo_Simulation, ABC):
     # Initialized as a forecast with parameter num_simulations
-    def __init__(self, forecast_name, model : Model, games : Games, num_simulations, existing_standings : League_Table = None):
-        super().__init__(forecast_name, model, games, num_simulations, existing_standings)
+    def __init__(self, forecast_name : str, model : Model, games : Games, num_simulations, existing_standings : League_Table = None):
+        super().__init__(forecast_name, model, num_simulations)
+        self.games = games
+        self.existing_standings = existing_standings
         # for league monte-carlo simulation, all simulations will produce League_Table
         self.simulations : list[Simulated_Table] = []
 

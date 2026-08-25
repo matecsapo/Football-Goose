@@ -1,5 +1,5 @@
 # for data handling
-from goose.data.goose_data_structures import Games, Standings
+from goose.data.goose_data_structures.standings_storage import Standings
 from pathlib import Path
 from random import randint
 import os
@@ -17,8 +17,8 @@ from abc import ABC, abstractmethod
         # these specifications are defined via run_simulation() interpret()
 class Monte_Carlo_Simulation(Forecast, ABC):
     # Initialized as a forecast with parameter num_simulations
-    def __init__(self, forecast_name, model : Model, games : Games, num_simulations, existing_standings : Standings = None):
-        super().__init__(forecast_name, model, games, existing_standings)
+    def __init__(self, forecast_name : str, model : Model, num_simulations):
+        super().__init__(forecast_name, model)
         self.num_simulations = num_simulations
         # Monte carlo forecast consists of (list of all simulations , interpretation of simulation)
         # for storing all simulations

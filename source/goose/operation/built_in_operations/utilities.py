@@ -3,7 +3,7 @@
 # imports necessary for helpers
 from goose.model import Model
 from goose.forecast.league_monte_carlo_simulation import PL_Monte_Carlo_Simulation, Laliga_Monte_Carlo_Simulation, Bundesliga_Monte_Carlo_Simulation, Ligue1_Monte_Carlo_Simulation, SerieA_Monte_Carlo_Simulation
-from goose.data.goose_data_structures import League
+from goose.data.goose_data_structures.identifiers import League
 
 # for discovering models
 from goose.discover import discover_models

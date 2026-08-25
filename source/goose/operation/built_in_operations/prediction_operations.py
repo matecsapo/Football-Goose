@@ -3,16 +3,16 @@ import goose.registry as registry
 import typer
 
 # imports necessary to run forecast
-from goose.data.goose_data_structures import Game
+from goose.data.goose_data_structures.game_storage import Game
 from goose.data.built_in_data_types.schedule_data import schedule_data
 from goose.operation.built_in_operations.utilities import load_model
-from goose.data.goose_data_structures import Team, League
+from goose.data.goose_data_structures.identifiers import Team, League, Season
 import pandas as pd
 from pathlib import Path
 
 # subfolder of goose operations for prediction operations
 # goose predict ...
-prediction_operations =  registry.goose_operations.create_subfolder("predict", description = "run a prediction")
+prediction_operations = registry.goose_operations.create_subfolder("predict", description = "run a prediction")
 
 # operation for predicting a game
 # goose predict game [league] [home_team] [away_team] [model] Flag[--save]
@@ -54,7 +54,7 @@ def predict_remaining(league : str,
         model, model_name = load_model(model_name)
         # pull schedule of games to predict
         typer.echo(f"Predicting all remaining {league.league} games...")
-        remaining_games = schedule_data.Retrieve(league, "2025-2026", True)
+        remaining_games = schedule_data.Retrieve(league, Season(2026), True)
         # Predict all remaining games
         game_predictions = []
         for game in remaining_games.games:

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Self
 
 # for data storage
-from goose.data.goose_data_structures import Game, Game_Prediction
+from goose.data.goose_data_structures.game_storage import Game, Game_Prediction
 from pathlib import Path
 import os
 import json
