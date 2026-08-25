@@ -12,7 +12,7 @@ Raw_Team_Name_Mappings = {
     "Crystal Palace": ["Crystal Palace FC", "CPFC", "Palace"],
     "Everton": ["Everton FC"],
     "Fulham": ["Fulham FC"],
-    "Ipswich Town": ["Ipswich", "Ipswich Town FC"], # Added for 2024+
+    "Ipswich Town": ["Ipswich", "Ipswich Town FC"],
     "Leeds United": ["Leeds", "Leeds Utd", "Leeds U", "LUFC"],
     "Leicester City": ["Leicester", "LCFC"],
     "Liverpool": ["Liverpool FC", "LFC"],
@@ -25,6 +25,8 @@ Raw_Team_Name_Mappings = {
     "Tottenham Hotspur": ["Tottenham", "Spurs", "Tottenham Hotspur FC", "THFC"],
     "West Ham United": ["West Ham", "West Ham Utd", "WHUFC", "The Hammers"],
     "Wolverhampton Wanderers": ["Wolverhampton", "Wolves", "Wolves FC", "WWFC"],
+    "Coventry City": ["Coventry", "Coventry City FC", "CCFC"],
+    "Hull City": ["Hull", "Hull City AFC", "HCAFC"],
 
     # --- LA LIGA ---
     "Alavés": ["Alaves", "Deportivo Alavés", "Dep. Alaves"],
@@ -50,6 +52,9 @@ Raw_Team_Name_Mappings = {
     "Elche": ["Elche CF", "Elche", "Elche Club de Fútbol"],
     "Levante": ["Levante UD", "Levante", "Levante Unión Deportiva", "LUD"],
     "Real Oviedo": ["Oviedo", "Real Oviedo", "Real Oviedo SAD", "Real Uviéu"],
+    "Racing Santander": ["Racing", "Real Racing Club", "Racing de Santander", "R. Santander"],
+    "Deportivo La Coruña": ["Deportivo La Coruna", "Deportivo", "Depor", "R.C. Deportivo", "RC Deportivo de La Coruña"],
+    "Málaga": ["Malaga", "Málaga CF", "Malaga CF", "MCF"],
 
     # --- BUNDESLIGA ---
     "Augsburg": ["FC Augsburg", "FCA", "Augsburg FC", "Augsbourg"],
@@ -72,6 +77,8 @@ Raw_Team_Name_Mappings = {
     "Union Berlin": ["1. FC Union Berlin", "Union Berlin", "FC Union"],
     "Werder Bremen": ["Bremen", "Werder", "SV Werder Bremen", "Werder Brem"],
     "Wolfsburg": ["VfL Wolfsburg", "Wolfsburg VfL", "VfL"],
+    "SV Elversberg": ["Elversberg", "SpVgg Elversberg", "SVE"],
+    "FC Schalke 04": ["Schalke", "Schalke 04", "S04", "FC Schalke"],
 
     # --- SERIE A ---
     "AC Milan": ["Milan", "ACM", "A.C. Milan"],
@@ -97,6 +104,7 @@ Raw_Team_Name_Mappings = {
     "Cremonese": ["US Cremonese", "Cremonese Calcio", "U.S. Cremonese 1903"],
     "Lecce": ["US Lecce", "U.S. Lecce", "Lecce Calcio"],
     "Pisa": ["Pisa SC", "Pisa 1909", "A.C. Pisa", "Pisa Sporting Club"],
+    "Frosinone": ["Frosinone Calcio", "Frosinone"],
 
     # --- LIGUE 1 ---
     "Angers": ["Angers SCO", "Angers-SCO", "SCO Angers", "Angers"],
@@ -119,7 +127,9 @@ Raw_Team_Name_Mappings = {
     "Toulouse": ["Toulouse FC", "Toulouse", "TFC", "Toulouse Football Club"],
     "Lorient": ["FC Lorient", "Lorient FC", "Lorient-Bretagne Sud", "FCL"],
     "Metz": ["FC Metz", "Metz FC", "Football Club de Metz"],
-    "Paris FC": ["PFC", "Paris FC", "Paris Football Club"]
+    "Paris FC": ["PFC", "Paris FC", "Paris Football Club"],
+    "Troyes": ["ESTAC Troyes", "ESTAC", "Troyes"],
+    "Le Mans": ["Le Mans FC", "Le Mans"]
 }
 
 # standardized version of each league's name, accounting for all variety of names used by different sources
