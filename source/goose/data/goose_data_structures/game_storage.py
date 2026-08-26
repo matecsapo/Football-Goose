@@ -8,11 +8,19 @@ from pathlib import Path
 class Game:
     # Game consists of home_team, away_team, and game date
     # flag indicating whether game is at a neutral venue
-    def __init__(self, home_team : Team, away_team : Team, date : datetime, neutral_venue = False):
+    def __init__(self, home_team : Team, away_team : Team, date : datetime, neutral_venue : bool = False):
         self.home_team = home_team
         self.away_team = away_team
         self.date = date
         self.neutral_venue = neutral_venue
+
+# struct for storing a specific completed game
+class Completed_Game(Game):
+    # extends to include home_goals, away_goals
+    def __init__(self, home_team : Team, away_team : Team, date : datetime, home_goals : int, away_goals : int, neutral_venue : bool = False):
+        super().__init__(home_team, away_team, date, neutral_venue)
+        self.home_goals = home_goals
+        self.away_goals = away_goals
 
 # struct for storing a set/schedule of games
 # ordered by date (earliest to latest)
