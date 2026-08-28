@@ -1,6 +1,6 @@
 # for implementing a forecast
 from goose.forecast.forecast import Forecast
-from goose.data.goose_data_structures.game_storage import Game
+from goose.data.goose_data_structures.game_storage import Game, Game_Points_Expectation
 from abc import ABC, abstractmethod
 
 # for employing a model
@@ -19,5 +19,5 @@ class Expectation(Forecast, ABC):
         # determine xp of both teams
         home_xp = 0 * prediction.prob_away_win + 1 * prediction.prob_draw + 3 * prediction.prob_home_win
         away_xp = 0 * prediction.prob_home_win + 1 * prediction.prob_draw + 3 * prediction.prob_away_win
-        # return xg and xp of both teams
-        return prediction.home_xg, prediction.away_xg, home_xp, away_xp
+        # return game points expectation
+        return Game_Points_Expectation(game, home_xp, away_xp)

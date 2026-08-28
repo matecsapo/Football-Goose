@@ -63,7 +63,7 @@ class League_Table(Table):
             "Team": pa.Column(object),
             "MP":   pa.Column(int, pa.Check.ge(0)), # MP must be >= 0
             "Pts":  pa.Column(int, pa.Check.ge(0)), # Pts must be >= 0
-            "GD":   pa.Column(int),
+            "GD":   pa.Column(int)
         },
         # Additional columns are allowed
         strict = False, 
@@ -82,7 +82,6 @@ class Expected_Table(Table):
             "Team": pa.Column(object),
             "MP":   pa.Column(int, pa.Check.ge(0)), # MP must be >= 0
             "xPts":  pa.Column(float, pa.Check.ge(0)), # Pts must be >= 0
-            "xGD":   pa.Column(float),
         },
         # Additional columns are allowed
         strict = False, 

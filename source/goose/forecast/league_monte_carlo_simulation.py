@@ -1,6 +1,6 @@
 # for data handling
 import pandas as pd
-from goose.data.goose_data_structures.game_storage import Game, Games
+from goose.data.goose_data_structures.game_storage import Game, Game_Simulation, Games
 from goose.data.goose_data_structures.standings_storage import League_Table, Simulated_Table
 
 # for implementing a monte carlo simulation forecast
@@ -71,7 +71,9 @@ class League_Monte_Carlo_Simulation(Monte_Carlo_Simulation, ABC):
     # Randomly simulates a result for specified game according to model
     def Simulate_Result(self, game : Game):
         # Simulate the game according to model's prediction
-        home_goals, away_goals = self.model.Simulate_Game(game)
+        simulation = self.model.Simulate_Game(game)
+        home_goals = simulation.home_simulated_goals
+        away_goals = simulation.away_simulated_goals
         # determine result
         result = "d" # draw
         if home_goals > away_goals:

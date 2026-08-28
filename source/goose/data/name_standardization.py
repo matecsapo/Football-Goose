@@ -53,7 +53,7 @@ Raw_Team_Name_Mappings = {
     "Levante": ["Levante UD", "Levante", "Levante Unión Deportiva", "LUD"],
     "Real Oviedo": ["Oviedo", "Real Oviedo", "Real Oviedo SAD", "Real Uviéu"],
     "Racing Santander": ["Racing", "Real Racing Club", "Racing de Santander", "R. Santander"],
-    "Deportivo La Coruña": ["Deportivo La Coruna", "Deportivo", "Depor", "R.C. Deportivo", "RC Deportivo de La Coruña"],
+    "Deportivo La Coruña": ["Deportivo La Coruna", "Deportivo", "Depor", "R.C. Deportivo", "RC Deportivo de La Coruña", "Deportivo de A Coruña"],
     "Málaga": ["Malaga", "Málaga CF", "Malaga CF", "MCF"],
 
     # --- BUNDESLIGA ---

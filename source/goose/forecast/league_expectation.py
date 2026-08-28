@@ -1,6 +1,6 @@
 # for data manipulation
 import pandas as pd
-from goose.data.goose_data_structures.game_storage import Games
+from goose.data.goose_data_structures.game_storage import Game_Points_Expectation, Games
 from goose.data.goose_data_structures.standings_storage import League_Table, Expected_Table
 from pathlib import Path
 import os
@@ -44,22 +44,19 @@ class League_Expectation(Expectation):
             teams.add(game.home_team)
             teams.add(game.away_team)
         # Expect out all games
-        expected_results = {team: {"MP" : 0,"Pts" : 0, "GD" : 0} for team in teams}
+        expected_results = {team: {"MP" : 0,"Pts" : 0} for team in teams}
         for game in self.games.games:
             # Get expectation of game
-            home_xg, away_xg, home_xp, away_xp = self.Expect_Game(game, self.model)
+            game_points_expectation : Game_Points_Expectation = self.Expect_Game(game, self.model)
             # Update MP of each team
             expected_results[game.home_team]["MP"] += 1
             expected_results[game.away_team]["MP"] += 1
             # update points of each team
-            expected_results[game.home_team]["Pts"] += home_xp
-            expected_results[game.away_team]["Pts"] += away_xp
-            # update goal_diff for both teams
-            expected_results[game.home_team]["GD"] += home_xg - away_xg
-            expected_results[game.away_team]["GD"] += away_xg - home_xg
+            expected_results[game.home_team]["Pts"] += game_points_expectation.home_xPts
+            expected_results[game.away_team]["Pts"] += game_points_expectation.away_xPts
         # Summarize expected_results in a dataframe
         expected_results = pd.DataFrame.from_dict(expected_results, orient = "index").rename_axis("Team").reset_index(drop = False)
-        expected_results = expected_results.sort_values(by = ["Pts", "GD"], ascending=False)
+        expected_results = expected_results.sort_values("Pts", ascending=False)
         # return expected_results
         self.expected_results = expected_results
 
@@ -73,13 +70,12 @@ class League_Expectation(Expectation):
         # compute combined stats
         self.expected_standings["MP"] = self.expected_standings["MP_existing"] + self.expected_standings["MP_predicted"]
         self.expected_standings["xPts"] = self.expected_standings["Pts_existing"] + self.expected_standings["Pts_predicted"]
-        self.expected_standings["xGD"] = self.expected_standings["GD_existing"] + self.expected_standings["GD_predicted"]
         # store into Expected_Table
         self.expected_standings = Expected_Table(self.expected_standings)
         # Keep only basic created columns
         self.expected_standings.simplify()
         # sort by (Pts, GD)
-        self.expected_standings.standings = self.expected_standings.standings.sort_values(by = ["xPts", "xGD"], ascending = False)
+        self.expected_standings.standings = self.expected_standings.standings.sort_values("xPts", ascending = False)
     
     # displays forecast to terminal:
         # displays expected results

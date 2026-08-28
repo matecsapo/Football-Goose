@@ -58,7 +58,7 @@ def predict_remaining(league : str,
         # Predict all remaining games
         game_predictions = []
         for game in remaining_games.games:
-              game_predictions.append(model.Predict_Game(game).to_dict())
+              game_predictions.append(model.Predict_Game(game).to_dictionary())
         # convert to dataframe
         game_predictions = pd.DataFrame(game_predictions)
         # Display game prediction to terminal

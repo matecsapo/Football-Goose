@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Self
 
 # for data storage
-from goose.data.goose_data_structures.game_storage import Game, Game_Prediction
+from goose.data.goose_data_structures.game_storage import Game, Game_Prediction, Game_Simulation
 from pathlib import Path
 import os
 import json
@@ -26,7 +26,7 @@ class Model(ABC):
 
     # Simulate specified game according to model
     @abstractmethod
-    def Simulate_Game(self, game : Game) -> tuple[int, int]:
+    def Simulate_Game(self, game : Game) -> Game_Simulation:
         pass
     
     # saves all necessary model-specific save/data/files into model_save_root self.Model_Name/
