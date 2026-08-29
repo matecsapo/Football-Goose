@@ -3,7 +3,7 @@ from goose.data.goose_data_structures.identifiers import Team
 from datetime import datetime
 import pandas as pd
 from pathlib import Path
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Callable
 
 # struct for storing a specific game
 class Game:
@@ -161,6 +161,11 @@ class Games(Generic[G]):
     # Order games by date
     def Date_Order(self):
         self.games.sort(key = (lambda x : x.date))
+
+    # Filter - returns a Games container of only Game satisfying boolean condition
+    def Filter(self, condition : Callable[[G], bool]):
+        filtered_games = [g for g in self.games if condition(g)]
+        return Games(filtered_games)
 
     # returns list of all games as a dataframe
     def to_dataframe(self):

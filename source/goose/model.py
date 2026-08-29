@@ -17,7 +17,7 @@ import dill
 class Model(ABC):
     # all models must have a field self.Model_Name
     def __init__(self, model_name):
-        self.Model_Name = model_name
+        self.model_name = model_name
 
     # Predict specified game according to model
     @abstractmethod
@@ -52,10 +52,10 @@ class Model(ABC):
     def save_model_fgm(self, directory : str):
         directory = Path(directory)
         # model's root save path
-        model_root = directory / self.Model_Name
+        model_root = directory / self.model_name
         os.makedirs(model_root, exist_ok = True)
         # Folder for storing model's .fgm file
-        fgm_folder = model_root / (self.Model_Name + ".fgm")
+        fgm_folder = model_root / (self.model_name + ".fgm")
         os.makedirs(fgm_folder, exist_ok = True)
         # save model identification @ [self.Model_Name].fgm/model_identification.json (model type, imestamp saved, model root save path)
         model_type = self.__class__.__name__
