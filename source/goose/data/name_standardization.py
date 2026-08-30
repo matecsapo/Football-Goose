@@ -65,7 +65,7 @@ Raw_Team_Name_Mappings = {
     "Borussia Mönchengladbach": ["Mönchengladbach", "Moenchengladbach", "Monchengladbach", "Gladbach", "M'gladbach", "BMG", "Borussia M.Gladbach", "Borussia M'gladbach"],
     "Eintracht Frankfurt": ["Frankfurt", "Eintracht", "SGE", "E. Frankfurt"],
     "FC Cologne": ["Köln", "Koln", "Koeln", "FC Köln", "Cologne", "1. FC Köln", "1. FC Koeln"],
-    "Freiburg": ["SC Freiburg", "Freiburg SC", "SCF"],
+    "Freiburg": ["SC Freiburg", "Freiburg SC", "SCF", "Freiburg"],
     "Hamburger SV": ["HSV", "Hamburg", "Hamburger", "Hamburg SV"],
     "Heidenheim": ["1. FC Heidenheim", "1. FC Heidenheim 1846", "FCH", "FC Heidenheim", "Heidenh'm"],
     "Hoffenheim": ["TSG Hoffenheim", "TSG 1899 Hoffenheim", "Hoffenheim TSG", "1899 Hoffenheim"],
