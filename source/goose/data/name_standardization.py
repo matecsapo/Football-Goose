@@ -79,6 +79,7 @@ Raw_Team_Name_Mappings = {
     "Wolfsburg": ["VfL Wolfsburg", "Wolfsburg VfL", "VfL"],
     "SV Elversberg": ["Elversberg", "SpVgg Elversberg", "SVE"],
     "FC Schalke 04": ["Schalke", "Schalke 04", "S04", "FC Schalke"],
+    "Paderborn": ["SC Paderborn 07", "SC Paderborn", "Paderborn 07", "SCP", "SCP 07"],
 
     # --- SERIE A ---
     "AC Milan": ["Milan", "ACM", "A.C. Milan"],
