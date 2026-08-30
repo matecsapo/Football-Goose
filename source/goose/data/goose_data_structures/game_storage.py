@@ -167,6 +167,14 @@ class Games(Generic[G]):
         filtered_games = [g for g in self.games if condition(g)]
         return Games(filtered_games)
 
+    # Returns set of Teams involved in the set of games
+    def Teams_Involved(self) -> set:
+        teams = set()
+        for game in self.games:
+            teams.add(game.home_team)
+            teams.add(game.away_team)
+        return teams
+
     # returns list of all games as a dataframe
     def to_dataframe(self):
         return pd.DataFrame( 
